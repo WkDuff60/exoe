@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exoe-deploy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: exoe
+  template:
+    metadata:
+      labels:
+        app: exoe
+    spec:
+      volumes: 
+        - name: volume-story
+          hostPath:
+            path: /data-app-story 
+            type: DirectoryOrCreate
+      containers:
+      - name: exoe
+        volumeMounts:
+          - mountPath: /app/story
+            name: volume-story
+        image: wkduff/exoe:latest
+        env: 
+          - name: STORY_FOLDER
+            value: "story"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
